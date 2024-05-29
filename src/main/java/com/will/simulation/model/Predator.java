@@ -34,24 +34,27 @@ public class Predator extends Creature {
                     herbivore.life -= powerOfAttack;
                     // if Herbivore has 0 life left ---> remove it from the world map!
                     if (herbivore.life <= 0) {
+                        // just logging
                         format = String.format("%s from coordinate %s ATE %s from coordinate %s", this, this.coordinate, herbivore, herbivore.coordinate);
+                        System.out.println(format);
+
                         world.removeEntity(targetCoordinate);
                         world.removeEntity(this.coordinate);
-                        this.setCoordinate(targetCoordinate);
-                        world.addEntity(targetCoordinate, this);
-                        System.out.println(format);
+                        world.placeEntity(targetCoordinate, this);
                     } else {
+                        // just logging
                         format = String.format("%s from coordinate %s IS EATING %s from coordinate %s", this, this.coordinate, herbivore, herbivore.coordinate);
                         System.out.println(format);
                     }
                 }
                 // not nearby, need to make move towards herbivore
             } else {
+                // just logging
                 String format = String.format("%s from coordinate %s IS MOVING to coordinate %s", this, this.coordinate, targetCoordinate);
-                world.removeEntity(this.getCoordinate());
-                this.setCoordinate(targetCoordinate);
-                world.addEntity(targetCoordinate, this);
                 System.out.println(format);
+
+                world.removeEntity(this.getCoordinate());
+                world.placeEntity(targetCoordinate, this);
             }
         } else {
             System.out.println(this + " from coordinate " + this.coordinate + " HAS NOWHERE to go.");

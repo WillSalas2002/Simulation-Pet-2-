@@ -7,7 +7,9 @@ import java.util.*;
 public class World {
     private final int height;
     private final int width;
+    private final Random random = new Random();
     private final HashMap<Coordinate, Entity> worldMap = new HashMap<>();
+    private final Entity[] entitiesPool = new Entity[]{new Rock(), new Tree(), new Grass(), new Herbivore(), new Predator()};
 
     public World(int height, int width) {
         this.height = height;
@@ -29,16 +31,40 @@ public class World {
         return worldMap.get(coordinate);
     }
 
-//    public HashMap<Coordinate, Entity> getWorldMap() {
-//        return worldMap;
-//    }
-
-    public void addEntity(Coordinate coordinate, Entity entity) {
+    public void placeEntity(Coordinate coordinate, Entity entity) {
+        entity.setCoordinate(coordinate);
         worldMap.put(coordinate, entity);
     }
 
     public void removeEntity(Coordinate coordinate) {
         worldMap.remove(coordinate);
+    }
+
+    public Coordinate getRandomEmptyCoordinate() {
+        Coordinate coordinate;
+        do {
+            int y = random.nextInt(height);
+            int x = random.nextInt(width);
+            coordinate = new Coordinate(x, y);
+        } while (findEntityByCoordinate(coordinate) != null);
+        return coordinate;
+    }
+
+    public Entity getNewInstanceOfRandomEntity() {
+        return entitiesPool[random.nextInt(entitiesPool.length)].clone();
+    }
+
+    public Entity getNewInstanceOfEntityByType(Class<? extends Entity> clazz) {
+        for (Entity entity : entitiesPool) {
+            if (entity.getClass() == clazz) {
+                return entity.clone();
+            }
+        }
+        return null;
+    }
+
+    public boolean isCellEmpty(Coordinate coordinate) {
+        return !worldMap.containsKey(coordinate);
     }
 
     public int getHeight() {

@@ -27,15 +27,15 @@ public class Herbivore extends Creature {
         if (path != null) {
             Coordinate targetCoordinate = path.get(0);
             if (path.size() == 1) {
+                // the grass is nearby
                 world.removeEntity(targetCoordinate);
                 world.removeEntity(this.getCoordinate());
-                this.setCoordinate(targetCoordinate);
-                world.addEntity(targetCoordinate,this);
+                world.placeEntity(targetCoordinate,this);
                 this.life += 30;
             } else {
+                // grass is not near, need to move towards it
                 world.removeEntity(this.coordinate);
-                this.setCoordinate(targetCoordinate);
-                world.addEntity(targetCoordinate, this);
+                world.placeEntity(targetCoordinate, this);
             }
         }
     }

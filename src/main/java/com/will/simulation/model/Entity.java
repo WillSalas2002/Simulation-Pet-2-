@@ -19,10 +19,6 @@ public abstract class Entity {
 
     public abstract Entity clone();
 
-    public Entity(Coordinate coordinate) {
-        this.coordinate = coordinate;
-    }
-
     public Coordinate getCoordinate() {
         return coordinate;
     }

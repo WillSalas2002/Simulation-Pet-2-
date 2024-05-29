@@ -6,8 +6,6 @@ import java.util.*;
 
 public class Action {
     private final World world;
-    private final Random random = new Random();
-    private final Entity[] entities = new Entity[]{new Rock(), new Tree(), new Grass(), new Herbivore(), new Predator()};
 
     public Action(World world) {
         this.world = world;
@@ -16,28 +14,24 @@ public class Action {
     public void initActions() {
         for (int i = 0; i < world.getWidth() * world.getHeight() / 2; i++) {
 
-            Coordinate randomCoordinate = getRandomCoordinate();
-            // getting random entity and creating it with Prototype ---> no problem with coordinates when movement starts
-            Entity randomEntity = entities[random.nextInt(entities.length)].clone();
+            Coordinate randomCoordinate = world.getRandomEmptyCoordinate();
+            Entity randomEntity = world.getNewInstanceOfRandomEntity();
 
-            if (randomEntity instanceof Creature creature) {
-                creature.setLife(120);
-            }
-            randomEntity.setCoordinate(randomCoordinate);
-            world.addEntity(randomCoordinate, randomEntity);
+            world.placeEntity(randomCoordinate, randomEntity);
         }
     }
 
     public void turnActions() {
 
+        List<Coordinate> creatureCoordinates = new ArrayList<>();
+
         List<Coordinate> herbivoreCoordinates = world.findEntityCoordinates(Herbivore.class);
         List<Coordinate> predatorCoordinates = world.findEntityCoordinates(Predator.class);
-        List<Coordinate> creatureCoordinate = new ArrayList<>();
-        creatureCoordinate.addAll(herbivoreCoordinates);
-        creatureCoordinate.addAll(predatorCoordinates);
+        creatureCoordinates.addAll(herbivoreCoordinates);
+        creatureCoordinates.addAll(predatorCoordinates);
 
         // Iterating over each creature and calling makeMove() method of it
-        for (Coordinate coordinate : creatureCoordinate) {
+        for (Coordinate coordinate : creatureCoordinates) {
             Creature creature = (Creature) world.findEntityByCoordinate(coordinate);
             creature.makeMove(world);
         }
@@ -52,21 +46,9 @@ public class Action {
 
     private void addGrassToMap() {
         for (int i = 0; i < 5; i++) {
-            Coordinate randomCoordinate = getRandomCoordinate();
-            Entity entity = entities[2].clone();
-            entity.setCoordinate(randomCoordinate);
-            world.addEntity(randomCoordinate, entity);
+            Coordinate randomCoordinate = world.getRandomEmptyCoordinate();
+            Entity entity = world.getNewInstanceOfEntityByType(Grass.class);
+            world.placeEntity(randomCoordinate, entity);
         }
-    }
-
-    private Coordinate getRandomCoordinate() {
-        Coordinate coordinate;
-        do {
-            int y = random.nextInt(world.getHeight());
-            int x = random.nextInt(world.getWidth());
-            coordinate = new Coordinate(x, y);
-        } while (world.findEntityByCoordinate(coordinate) != null);
-
-        return coordinate;
     }
 }
