@@ -16,7 +16,18 @@ public class World {
         this.width = width;
     }
 
-    public List<Coordinate> findEntityCoordinates(Class<? extends Entity> clazz) {
+    public List<Coordinate> findAllCreatureCoordinates() {
+        List<Coordinate> coordinates = new ArrayList<>();
+        coordinates.addAll(findEntityCoordinatesByType(Herbivore.class));
+        coordinates.addAll(findEntityCoordinatesByType(Predator.class));
+        return coordinates;
+    }
+
+    public int getEntityQuantityByType(Class<? extends Entity> clazz) {
+        return findEntityCoordinatesByType(clazz).size();
+    }
+
+    private List<Coordinate> findEntityCoordinatesByType(Class<? extends Entity> clazz) {
         List<Coordinate> entityCoordinates = new ArrayList<>();
         for (Map.Entry<Coordinate, Entity> entry : worldMap.entrySet()) {
             Entity entity = entry.getValue();
@@ -65,6 +76,10 @@ public class World {
 
     public boolean isCellEmpty(Coordinate coordinate) {
         return !worldMap.containsKey(coordinate);
+    }
+
+    public boolean isGameFinished() {
+        return findEntityCoordinatesByType(Herbivore.class).isEmpty();
     }
 
     public int getHeight() {

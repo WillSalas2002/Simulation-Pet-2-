@@ -29,30 +29,28 @@ public class Predator extends Creature {
             Coordinate targetCoordinate = path.get(0);
             // Herbivore is near
             if (path.size() == 1) {
-                if (world.findEntityByCoordinate(targetCoordinate) instanceof Herbivore herbivore) {
-                    String format;
-                    herbivore.life -= powerOfAttack;
-                    // if Herbivore has 0 life left ---> remove it from the world map!
-                    if (herbivore.life <= 0) {
-                        // just logging
-                        format = String.format("%s from coordinate %s ATE %s from coordinate %s", this, this.coordinate, herbivore, herbivore.coordinate);
-                        System.out.println(format);
+                Herbivore herbivore = (Herbivore) world.findEntityByCoordinate(targetCoordinate);
+                String format;
+                herbivore.life -= powerOfAttack;
+                // if Herbivore has 0 life left ---> remove it from the world map!
+                if (herbivore.life <= 0) {
+                    // just logging
+                    format = String.format("%s from coordinate %s ATE %s from coordinate %s", this, this.coordinate, herbivore, herbivore.coordinate);
 
-                        world.removeEntity(targetCoordinate);
-                        world.removeEntity(this.coordinate);
-                        world.placeEntity(targetCoordinate, this);
-                    } else {
-                        // just logging
-                        format = String.format("%s from coordinate %s IS EATING %s from coordinate %s", this, this.coordinate, herbivore, herbivore.coordinate);
-                        System.out.println(format);
-                    }
+                    System.out.println(format);
+                    world.removeEntity(targetCoordinate);
+                    world.removeEntity(this.coordinate);
+                    world.placeEntity(targetCoordinate, this);
+                } else {
+                    // just logging
+                    format = String.format("%s from coordinate %s IS EATING %s (%d) from coordinate %s", this, this.coordinate, herbivore, herbivore.life, herbivore.coordinate);
+                    System.out.println(format);
                 }
                 // not nearby, need to make move towards herbivore
             } else {
                 // just logging
                 String format = String.format("%s from coordinate %s IS MOVING to coordinate %s", this, this.coordinate, targetCoordinate);
                 System.out.println(format);
-
                 world.removeEntity(this.getCoordinate());
                 world.placeEntity(targetCoordinate, this);
             }

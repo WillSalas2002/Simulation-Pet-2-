@@ -1,10 +1,5 @@
 package com.will.simulation;
 
-import com.will.simulation.model.Grass;
-import com.will.simulation.model.Herbivore;
-
-import java.util.List;
-
 public class Simulation {
     private final World world;
     private int counter;
@@ -41,26 +36,15 @@ public class Simulation {
     */
 
     public void startSimulation() {
-        List<Coordinate> grassCoordinates;
-        List<Coordinate> herbivoreCoordinates;
         do {
-            if (counter == 18) {
-                int i = 0;
-            }
-            if (counter == 25) {
-                int i = 0;
-            }
-            grassCoordinates = world.findEntityCoordinates(Grass.class);
-            herbivoreCoordinates = world.findEntityCoordinates(Herbivore.class);
             nextTurn();
-            counter++;
             try {
                 Thread.sleep(1200);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-
-        } while (!grassCoordinates.isEmpty() && !herbivoreCoordinates.isEmpty());
+            counter++;
+        } while (!world.isGameFinished());
         System.out.println("The total number of looping is: " + counter);
     }
 
