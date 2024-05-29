@@ -36,7 +36,7 @@ public class BreadthFirstSearch implements PathFinder {
                     return path;
                 }
             }
-            List<Coordinate> neighbouringCells = findNeighbouringCells(currentCoordinate, targetClass, world);
+            List<Coordinate> neighbouringCells = findNeighbouringCell(currentCoordinate, targetClass, world);
 
             for (Coordinate neighbour : neighbouringCells) {
                 if (!visited.contains(neighbour)) {
@@ -50,47 +50,33 @@ public class BreadthFirstSearch implements PathFinder {
         return null;
     }
 
-    private List<Coordinate> findNeighbouringCells(Coordinate startingCoordinate, Class<? extends Entity> targetClass, World world) {
-
+    private List<Coordinate> findNeighbouringCell(Coordinate startingCoordinate, Class<? extends Entity> targetClass, World world) {
         List<Coordinate> neighbours = new ArrayList<>();
 
-        // resulting static Entity coordinates
-        List<Coordinate> staticEntityCoordinates = new ArrayList<>();
+        int[] i = new int[]{0, 1, -1};
 
-        // static Entities coordinates for all
-        List<Coordinate> rockCoordinates = world.findEntityCoordinates(Rock.class);
-        List<Coordinate> treeCoordinates = world.findEntityCoordinates(Tree.class);
+        for (int x = 0; x < i.length; x++) {
+            for (int y = 0; y < i.length; y++) {
+                Coordinate offeringCell = new Coordinate(startingCoordinate.getX() + i[x], startingCoordinate.getY() + i[y]);
 
-        staticEntityCoordinates.addAll(rockCoordinates);
-        staticEntityCoordinates.addAll(treeCoordinates);
+                if (offeringCell.getX() < 0 || offeringCell.getX() >= world.getWidth()) continue;
+                if (offeringCell.getY() < 0 || offeringCell.getY() >= world.getHeight()) continue;
 
-        // static Entities coordinates by Creature type
-        if (targetClass == Herbivore.class) { // this is Predator
-            List<Coordinate> grassCoordinates = world.findEntityCoordinates(Grass.class);
-            List<Coordinate> predatorCoordinates = world.findEntityCoordinates(Predator.class);
-            staticEntityCoordinates.addAll(grassCoordinates);
-            staticEntityCoordinates.addAll(predatorCoordinates);
-        } else if (targetClass == Grass.class) { // this is Herbivore
-            List<Coordinate> predatorCoordinates = world.findEntityCoordinates(Predator.class);
-            List<Coordinate> herbivoreCoordinates = world.findEntityCoordinates(Herbivore.class);
-            staticEntityCoordinates.addAll(predatorCoordinates);
-            staticEntityCoordinates.addAll(herbivoreCoordinates);
-        }
+                if (offeringCell.equals(startingCoordinate)) continue;
+                if (!world.isCellEmpty(offeringCell)) {
+                    Entity offeringEntity = world.findEntityByCoordinate(offeringCell);
 
-        int[] cellX = new int[]{-1, 0, 1};
-        int[] cellY = new int[]{-1, 0, 1};
+                    if (offeringEntity instanceof Rock) continue;
+                    if (offeringEntity instanceof Tree) continue;
+                    if (offeringEntity instanceof Predator) continue;
 
-        // Finding neighbouring Cells
-        for (int x = 0; x < cellX.length; x++) {
-            for (int y = 0; y < cellY.length; y++) {
-                Coordinate neighbouringCellCoordinate = new Coordinate(startingCoordinate.getX() + cellX[x], startingCoordinate.getY() + cellY[y]);
-
-                if (neighbouringCellCoordinate.getX() >= 0 && neighbouringCellCoordinate.getY() >= 0 &&
-                        neighbouringCellCoordinate.getX() <= (world.getWidth() - 1) && neighbouringCellCoordinate.getY() <= (world.getHeight() - 1) &&
-                        !neighbouringCellCoordinate.equals(startingCoordinate) &&
-                        !staticEntityCoordinates.contains(neighbouringCellCoordinate)) {
-                    neighbours.add(neighbouringCellCoordinate);
+                    if (targetClass == Herbivore.class) { // This is Predator
+                        if (offeringEntity instanceof Grass) continue;
+                    } else if (targetClass == Grass.class) { // This is Herbivore
+                        if (offeringEntity instanceof Herbivore) continue;
+                    }
                 }
+                neighbours.add(offeringCell);
             }
         }
         return neighbours;
