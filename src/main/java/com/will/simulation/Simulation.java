@@ -17,24 +17,6 @@ public class Simulation {
         action.turnActions();
     }
 
-    /*
-    public void run() {
-        Thread startThread = new Thread(this::startSimulation);
-        Thread pauseThread = new Thread(this::pauseSimulation);
-
-        pauseThread.start();
-        startThread.start();
-        try {
-            pauseThread.join();
-            startThread.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        startSimulation();
-    }
-    */
-
     public void startSimulation() {
         do {
             nextTurn();

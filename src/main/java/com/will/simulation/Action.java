@@ -11,8 +11,8 @@ public class Action {
 
     public void initActions() {
         for (int i = 0; i < world.getWidth() * world.getHeight() / 2; i++) {
-            Coordinate randomCoordinate = world.getRandomEmptyCoordinate();
-            Entity randomEntity = world.getNewInstanceOfRandomEntity();
+            Coordinate randomCoordinate = world.generateRandomEmptyCoordinate();
+            Entity randomEntity = world.getNewRandomEntity();
             world.placeEntity(randomCoordinate, randomEntity);
         }
     }
@@ -31,8 +31,8 @@ public class Action {
 
     private void addGrassToMap() {
         for (int i = 0; i < 5; i++) {
-            Coordinate randomCoordinate = world.getRandomEmptyCoordinate();
-            Entity entity = world.getNewInstanceOfEntityByType(Grass.class);
+            Coordinate randomCoordinate = world.generateRandomEmptyCoordinate();
+            Entity entity = world.getNewEntityByType(Grass.class);
             world.placeEntity(randomCoordinate, entity);
         }
     }

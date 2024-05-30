@@ -18,16 +18,16 @@ public class World {
 
     public List<Coordinate> findAllCreatureCoordinates() {
         List<Coordinate> coordinates = new ArrayList<>();
-        coordinates.addAll(findEntityCoordinatesByType(Herbivore.class));
-        coordinates.addAll(findEntityCoordinatesByType(Predator.class));
+        coordinates.addAll(findCoordinatesByEntityType(Herbivore.class));
+        coordinates.addAll(findCoordinatesByEntityType(Predator.class));
         return coordinates;
     }
 
     public int getEntityQuantityByType(Class<? extends Entity> clazz) {
-        return findEntityCoordinatesByType(clazz).size();
+        return findCoordinatesByEntityType(clazz).size();
     }
 
-    private List<Coordinate> findEntityCoordinatesByType(Class<? extends Entity> clazz) {
+    private List<Coordinate> findCoordinatesByEntityType(Class<? extends Entity> clazz) {
         List<Coordinate> entityCoordinates = new ArrayList<>();
         for (Map.Entry<Coordinate, Entity> entry : worldMap.entrySet()) {
             Entity entity = entry.getValue();
@@ -51,7 +51,7 @@ public class World {
         worldMap.remove(coordinate);
     }
 
-    public Coordinate getRandomEmptyCoordinate() {
+    public Coordinate generateRandomEmptyCoordinate() {
         Coordinate coordinate;
         do {
             int y = random.nextInt(height);
@@ -61,11 +61,11 @@ public class World {
         return coordinate;
     }
 
-    public Entity getNewInstanceOfRandomEntity() {
+    public Entity getNewRandomEntity() {
         return entitiesPool[random.nextInt(entitiesPool.length)].clone();
     }
 
-    public Entity getNewInstanceOfEntityByType(Class<? extends Entity> clazz) {
+    public Entity getNewEntityByType(Class<? extends Entity> clazz) {
         for (Entity entity : entitiesPool) {
             if (entity.getClass() == clazz) {
                 return entity.clone();
@@ -79,7 +79,7 @@ public class World {
     }
 
     public boolean isGameFinished() {
-        return findEntityCoordinatesByType(Herbivore.class).isEmpty();
+        return findCoordinatesByEntityType(Herbivore.class).isEmpty();
     }
 
     public int getHeight() {
