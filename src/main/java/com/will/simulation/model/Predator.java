@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Predator extends Creature {
 
-    private final int powerOfAttack = 30;
+    private final int POWER_OF_ATTACK = 30;
 
     public Predator() {
         sign = "\uD83D\uDC3A";
@@ -27,35 +27,27 @@ public class Predator extends Creature {
         List<Coordinate> path = pathFinder.findPath(this, world, Herbivore.class);
         if (path != null) {
             Coordinate targetCoordinate = path.get(0);
-            // Herbivore is near
+            // target is near
             if (path.size() == 1) {
                 Herbivore herbivore = (Herbivore) world.findEntityByCoordinate(targetCoordinate);
-                String format;
-                herbivore.life -= powerOfAttack;
-                // if Herbivore has 0 life left ---> remove it from the world map!
+                herbivore.life -= POWER_OF_ATTACK;
                 if (herbivore.life <= 0) {
-                    // just logging
-                    format = String.format("%s from coordinate %s ATE %s from coordinate %s", this, this.coordinate, herbivore, herbivore.coordinate);
-
-                    System.out.println(format);
-                    world.removeEntity(targetCoordinate);
-                    world.removeEntity(this.coordinate);
-                    world.placeEntity(targetCoordinate, this);
+                    System.out.printf("%s from coordinate %s ATE %s (%d) from coordinate %s \n", this, this.coordinate, herbivore, herbivore.life, herbivore.coordinate);
+                    eatTargetEntity(world, targetCoordinate);
                 } else {
-                    // just logging
-                    format = String.format("%s from coordinate %s IS EATING %s (%d) from coordinate %s", this, this.coordinate, herbivore, herbivore.life, herbivore.coordinate);
-                    System.out.println(format);
+                    System.out.printf("%s from coordinate %s IS EATING %s (%d) from coordinate %s \n", this, this.coordinate, herbivore, herbivore.life, herbivore.coordinate);
                 }
-                // not nearby, need to make move towards herbivore
+                // target is not near, need to make move towards herbivore
             } else {
-                // just logging
-                String format = String.format("%s from coordinate %s IS MOVING to coordinate %s", this, this.coordinate, targetCoordinate);
-                System.out.println(format);
-                world.removeEntity(this.getCoordinate());
-                world.placeEntity(targetCoordinate, this);
+                System.out.printf("%s from coordinate %s IS MOVING to coordinate %s \n", this, this.coordinate, targetCoordinate);
+                moveTowardsTargetEntity(world, targetCoordinate);
             }
         } else {
-            System.out.println(this + " from coordinate " + this.coordinate + " HAS NOWHERE to go.");
+            System.out.printf("%s from coordinate %s HAS NOWHERE to go \n", this, this.coordinate);
+            this.life -= STARVATION_VALUE;
+            if (this.life <= 0) {
+                world.removeEntity(this.coordinate);
+            }
         }
     }
 }

@@ -82,6 +82,10 @@ public class World {
         return findCoordinatesByEntityType(Herbivore.class).isEmpty();
     }
 
+    public int getWorldMapArea() {
+        return width * height;
+    }
+
     public int getHeight() {
         return height;
     }
