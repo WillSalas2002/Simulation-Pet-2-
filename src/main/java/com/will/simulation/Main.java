@@ -10,7 +10,7 @@ package com.will.simulation;
 
 public class Main {
     public static void main(String[] args) {
-        Simulation simulation = new Simulation(new World(12, 12));
+        Simulation simulation = new Simulation(new World(20, 16));
         simulation.startSimulation();
     }
 }
