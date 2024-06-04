@@ -18,7 +18,7 @@ public class WorldRenderer {
                 if (entity == null) {
                     System.out.print("[" + EMPTY + "]");
                 } else {
-                    System.out.print("[" + entity + "]");
+                    System.out.print("[" + entity.getSprite() + "]");
                 }
             }
             System.out.println("|" +y);

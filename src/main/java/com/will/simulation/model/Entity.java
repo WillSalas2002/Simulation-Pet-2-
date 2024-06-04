@@ -4,20 +4,11 @@ import com.will.simulation.Coordinate;
 
 public abstract class Entity {
 
-    protected String sign;
+    protected String sprite;
     protected Coordinate coordinate;
 
     public Entity() {
     }
-
-    public Entity(Entity target) {
-        if (target != null) {
-            this.sign = target.sign;
-            this.coordinate = target.coordinate;
-        }
-    }
-
-    public abstract Entity clone();
 
     public Coordinate getCoordinate() {
         return coordinate;
@@ -27,8 +18,7 @@ public abstract class Entity {
         this.coordinate = coordinate;
     }
 
-    @Override
-    public String toString() {
-        return sign;
+    public String getSprite() {
+        return sprite;
     }
 }

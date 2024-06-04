@@ -7,7 +7,6 @@ import com.will.simulation.World;
 
 public abstract class Creature extends Entity {
     protected PathFinder pathFinder = new BreadthFirstSearch();
-    protected int speed = 1;
     protected int life = 100;
     protected final int CALORIC_VALUE = 15;
     protected final int STARVATION_VALUE = 15;
@@ -15,24 +14,15 @@ public abstract class Creature extends Entity {
     public Creature() {
     }
 
-    public Creature(Creature target) {
-        super(target);
-        if (target != null) {
-            this.life = target.life;
-            this.speed = target.speed;
-            this.pathFinder = target.pathFinder;
-        }
-    }
-
     public abstract void makeMove(World world);
 
-    protected void eatTargetEntity(World world, Coordinate targetEntityCoordinate) {
-        world.removeEntity(targetEntityCoordinate);
+    protected void eatTargetEntity(World world, Entity entity) {
+        world.removeEntity(entity.coordinate);
         world.removeEntity(this.coordinate);
-        world.placeEntity(targetEntityCoordinate, this);
+        world.placeEntity(entity.coordinate, this);
     }
 
-    protected void moveTowardsTargetEntity(World world, Coordinate targetCoordinate) {
+    protected void moveToCoordinate(World world, Coordinate targetCoordinate) {
         world.removeEntity(this.coordinate);
         world.placeEntity(targetCoordinate, this);
     }

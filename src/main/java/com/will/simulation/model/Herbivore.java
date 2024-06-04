@@ -8,29 +8,21 @@ import java.util.List;
 public class Herbivore extends Creature {
 
     public Herbivore() {
-        sign = "\uD83D\uDC11";
-    }
-
-    private Herbivore(Herbivore target) {
-        super(target);
-    }
-
-    @Override
-    public Creature clone() {
-        return new Herbivore(this);
+        sprite = "\uD83D\uDC11";
     }
 
     @Override
     public void makeMove(World world) {
         List<Coordinate> path = pathFinder.findPath(this, world, Grass.class);
 
-        if (path != null) {
+        if (!path.isEmpty()) {
             Coordinate targetCoordinate = path.get(0);
             if (path.size() == 1) {
-                eatTargetEntity(world, targetCoordinate);
+                Entity targetEntity = world.findEntityByCoordinate(targetCoordinate);
+                eatTargetEntity(world, targetEntity);
                 this.life += CALORIC_VALUE;
             } else {
-                moveTowardsTargetEntity(world, targetCoordinate);
+                moveToCoordinate(world, targetCoordinate);
             }
         } else {
             this.life -= STARVATION_VALUE;
