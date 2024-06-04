@@ -20,12 +20,12 @@ public class BreadthFirstSearch implements PathFinder {
         Queue<Coordinate> queue = new LinkedList<>();
         queue.add(startingCoordinate);
 
+        List<Coordinate> path = new ArrayList<>();
         while (!queue.isEmpty()) {
             Coordinate currentCoordinate = queue.poll();
             Entity currentEntity = world.findEntityByCoordinate(currentCoordinate);
             if (world.findEntityByCoordinate(currentCoordinate) != null) {
                 if (currentEntity.getClass().equals(targetClass)) {
-                    List<Coordinate> path = new ArrayList<>();
                     Coordinate traceBack = currentCoordinate;
                     while (traceBack != null) {
                         path.add(traceBack);
@@ -46,8 +46,7 @@ public class BreadthFirstSearch implements PathFinder {
                 }
             }
         }
-
-        return null;
+        return path;
     }
 
     private List<Coordinate> findNeighbouringCell(Coordinate startingCoordinate, Class<? extends Entity> targetClass, World world) {
@@ -57,26 +56,16 @@ public class BreadthFirstSearch implements PathFinder {
 
         for (int x = 0; x < i.length; x++) {
             for (int y = 0; y < i.length; y++) {
+
+                if (x == 0 && y == 0) continue; // Skip the current cell
                 Coordinate offeringCell = new Coordinate(startingCoordinate.getX() + i[x], startingCoordinate.getY() + i[y]);
 
-                if (offeringCell.getX() < 0 || offeringCell.getX() >= world.getWidth()) continue;
-                if (offeringCell.getY() < 0 || offeringCell.getY() >= world.getHeight()) continue;
+                if (offeringCell.getX() < 0 || offeringCell.getX() >= world.getWidth() ||
+                        offeringCell.getY() < 0 || offeringCell.getY() >= world.getHeight()) continue; // skip if out of bounds;
 
-                if (offeringCell.equals(startingCoordinate)) continue;
-                if (!world.isCellEmpty(offeringCell)) {
-                    Entity offeringEntity = world.findEntityByCoordinate(offeringCell);
-
-                    if (offeringEntity instanceof Rock) continue;
-                    if (offeringEntity instanceof Tree) continue;
-                    if (offeringEntity instanceof Predator) continue;
-
-                    if (targetClass == Herbivore.class) { // This is Predator
-                        if (offeringEntity instanceof Grass) continue;
-                    } else if (targetClass == Grass.class) { // This is Herbivore
-                        if (offeringEntity instanceof Herbivore) continue;
-                    }
+                if (world.isCellEmpty(offeringCell) || world.findEntityByCoordinate(offeringCell).getClass() == targetClass) {
+                    neighbours.add(offeringCell);
                 }
-                neighbours.add(offeringCell);
             }
         }
         return neighbours;
