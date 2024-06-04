@@ -7,13 +7,28 @@ import java.util.*;
 public class World {
     private final int height;
     private final int width;
-    private final Random random = new Random();
-    private final HashMap<Coordinate, Entity> worldMap = new HashMap<>();
-    private final Entity[] entitiesPool = new Entity[]{new Rock(), new Tree(), new Grass(), new Herbivore(), new Predator()};
+    private final Map<Coordinate, Entity> worldMap = new HashMap<>();
 
     public World(int height, int width) {
         this.height = height;
         this.width = width;
+    }
+
+    public Entity findEntityByCoordinate(Coordinate coordinate) {
+        return worldMap.get(coordinate);
+    }
+
+    public void placeEntity(Coordinate coordinate, Entity entity) {
+        entity.setCoordinate(coordinate);
+        worldMap.put(coordinate, entity);
+    }
+
+    public void removeEntity(Coordinate coordinate) {
+        worldMap.remove(coordinate);
+    }
+
+    public boolean isCellEmpty(Coordinate coordinate) {
+        return !worldMap.containsKey(coordinate);
     }
 
     public List<Coordinate> findAllCreatureCoordinates() {
@@ -36,50 +51,6 @@ public class World {
             }
         }
         return entityCoordinates;
-    }
-
-    public Entity findEntityByCoordinate(Coordinate coordinate) {
-        return worldMap.get(coordinate);
-    }
-
-    public void placeEntity(Coordinate coordinate, Entity entity) {
-        entity.setCoordinate(coordinate);
-        worldMap.put(coordinate, entity);
-    }
-
-    public void removeEntity(Coordinate coordinate) {
-        worldMap.remove(coordinate);
-    }
-
-    public Coordinate generateRandomEmptyCoordinate() {
-        Coordinate coordinate;
-        do {
-            int y = random.nextInt(height);
-            int x = random.nextInt(width);
-            coordinate = new Coordinate(x, y);
-        } while (findEntityByCoordinate(coordinate) != null);
-        return coordinate;
-    }
-
-    public Entity getNewRandomEntity() {
-        return entitiesPool[random.nextInt(entitiesPool.length)].clone();
-    }
-
-    public Entity getNewEntityByType(Class<? extends Entity> clazz) {
-        for (Entity entity : entitiesPool) {
-            if (entity.getClass() == clazz) {
-                return entity.clone();
-            }
-        }
-        return null;
-    }
-
-    public boolean isCellEmpty(Coordinate coordinate) {
-        return !worldMap.containsKey(coordinate);
-    }
-
-    public boolean isGameFinished() {
-        return findCoordinatesByEntityType(Herbivore.class).isEmpty();
     }
 
     public int getWorldMapArea() {
